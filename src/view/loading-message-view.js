@@ -1,12 +1,14 @@
 import { createElement } from '../render.js';
 
-function createLogoTemplate() {
-  return '<img class="page-header__logo" src="img/logo.png" width="42" height="42" alt="Trip logo">';
+function createLoadingMessageTemplate() {
+  return `
+  <p class="trip-events__msg">Loading...</p>
+`;
 }
 
-export default class LogoView {
+export default class LoadingMessageView {
   getTemplate() {
-    return createLogoTemplate();
+    return createLoadingMessageTemplate();
   }
 
   getElement() {
