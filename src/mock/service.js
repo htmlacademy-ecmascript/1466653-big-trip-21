@@ -36,7 +36,7 @@ export default class MockService {
       const destination = getRandomArrayElement(this.destinations);
       const hasOffers = !!getRandomInteger(0, 1);
       const offersOfPointType = this.offers.find((offer) => offer.type === type);
-      const offerIds = hasOffers ? offersOfPointType.offers.map((offer) => offer.id) : [];
+      const offerIds = hasOffers ? offersOfPointType.offers.map((offer) => offer.id).slice(0, (offersOfPointType.offers.length - 1)) : [];
 
       return createPoint(destination.id, type, offerIds);
     });

@@ -40,8 +40,8 @@ function createEventTemplate(point, destination, offers) {
         &euro;&nbsp;<span class="event__price-value">${point.basePrice}</span>
       </p>
 
-      <h4 class="visually-hidden">Offers:</h4>
       ${ offers.length > 0 ? `
+      <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
         ${offers.map((offer) => `<li class="event__offer">
         <span class="event__offer-title">${offer.title}</span>
@@ -66,10 +66,10 @@ function createEventTemplate(point, destination, offers) {
 }
 
 export default class EventView {
-  constructor({ point, destination, offers }) {
+  constructor({ point, destination, selectedOffers }) {
     this.point = point;
     this.destination = destination;
-    this.offers = offers;
+    this.offers = selectedOffers;
   }
 
   getTemplate() {

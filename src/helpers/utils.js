@@ -22,12 +22,16 @@ function getDateTimeShortText(date) {
   return date ? dayjs(date).format('YYYY-MM-DD') : '';
 }
 
+function getDateTimeFieldText(date) {
+  return date ? dayjs(date).format('DD/MM/YY HH:mm') : '';
+}
+
 function getDateMonthText(date) {
   return date ? dayjs(date).format('MMM DD') : '';
 }
 
 function getTimeText(date) {
-  return date ? dayjs(date).format('hh:mm') : ''; // HH ????
+  return date ? dayjs(date).format('hh:mm') : '';
 }
 
 function getDuration(dateStart, dateEnd) {
@@ -50,16 +54,13 @@ function getDuration(dateStart, dateEnd) {
   return { minutes, hours, days };
 }
 
-// function isDateExpired(date) {
-//   return date && dayjs().isAfter(date, 'D');
-// }
-
 export {
   getRandomInteger,
   getRandomArrayElement,
   // isDateExpired,
   getDateTimeFullText,
   getDateTimeShortText,
+  getDateTimeFieldText,
   getDateMonthText,
   getTimeText,
   getDuration,
