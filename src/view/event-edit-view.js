@@ -2,7 +2,75 @@ import { createElement } from '../render.js';
 import { getDateTimeFieldText } from '../helpers/utils.js';
 import { OFFER_TYPES, CITIES } from '../mock/const.js';
 
-function createEventEditTemplate(point, destination, selectedOffers, availableOffers) {
+function createOfferTypeSelectorsTemplate() {
+  return OFFER_TYPES.map((offerType) => `
+  <div class="event__type-item">
+    <input id="event-type-${offerType.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offerType.toLowerCase()}">
+    <label class="event__type-label  event__type-label--${offerType.toLowerCase()}" for="event-type-${offerType.toLowerCase()}-1">${offerType}</label>
+  </div>
+  `).join('');
+}
+
+function createAvailableOffersTemplate(availableOffers, selectedOffers = []) {
+  if (availableOffers.length === 0) {
+    return '';
+  }
+
+  return `
+  <section class="event__section  event__section--offers">
+  <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+
+  <div class="event__available-offers">
+    ${availableOffers.map((offer) => {
+    const isOfferSelected = selectedOffers.includes(offer.id);
+    const offerTitle = offer.title.toLowerCase().split(' ').join('-');
+
+    return `
+      <div class="event__offer-selector">
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerTitle}-1" type="checkbox" name="event-offer-${offerTitle}" ${isOfferSelected ? 'checked' : ''}>
+        <label class="event__offer-label" for="event-offer-${offerTitle}-1">
+          <span class="event__offer-title">${offer.title}</span>
+          &plus;&euro;&nbsp;
+          <span class="event__offer-price">${offer.price}</span>
+        </label>
+      </div>
+    `;
+  }).join('')}
+    </div>
+  </section>
+  `;
+}
+
+function createDestinationPhotosTemplate(pictures) {
+  if (!pictures) {
+    return '';
+  }
+
+  return `
+    <div class="event__photos-container">
+      <div class="event__photos-tape">
+        ${pictures.map((pic) => `
+          <img class="event__photo" src="${pic.src}" alt="${pic.description}">
+        `).join('')}
+      </div>
+    </div>`;
+}
+
+function createDestinationTemplate(destination) {
+  if (!destination) {
+    return '';
+  }
+
+  return `
+    <section class="event__section  event__section--destination">
+      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      ${destination.description ? `<p class="event__destination-description">${destination.description}</p>` : ''}
+
+      ${destination.pictures.length > 0 ? createDestinationPhotosTemplate(destination.pictures) : ''}
+    </section>`;
+}
+
+function createEventEditTemplate(point, destination, availableOffers, selectedOffers) {
   const startDateTimeText = getDateTimeFieldText(point.dateFrom);
   const endDateTimeText = getDateTimeFieldText(point.dateTo);
 
@@ -21,12 +89,7 @@ function createEventEditTemplate(point, destination, selectedOffers, availableOf
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
 
-              ${OFFER_TYPES.map((offerType) => `
-              <div class="event__type-item">
-                <input id="event-type-${offerType.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offerType.toLowerCase()}">
-                <label class="event__type-label  event__type-label--${offerType.toLowerCase()}" for="event-type-${offerType.toLowerCase()}-1">${offerType}</label>
-              </div>
-              `).join('')}
+              ${createOfferTypeSelectorsTemplate()}
             </fieldset>
           </div>
         </div>
@@ -35,7 +98,7 @@ function createEventEditTemplate(point, destination, selectedOffers, availableOf
           <label class="event__label  event__type-output" for="event-destination-1">
             ${point.type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination ? destination.name : ''}" list="destination-list-1">
           <datalist id="destination-list-1">
             ${CITIES.map((city) => `<option value="${city}"></option>`).join('')}
           </datalist>
@@ -64,66 +127,25 @@ function createEventEditTemplate(point, destination, selectedOffers, availableOf
         </button>
       </header>
 
-      ${(destination || availableOffers.length > 0) ? `
-        <section class="event__details">
-
-        ${availableOffers.length > 0 ? `
-        <section class="event__section  event__section--offers">
-          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-          <div class="event__available-offers">
-          ${availableOffers.map((offer) => {
-            const isOfferSelected = selectedOffers.includes(offer.id);
-            const offerTitle = offer.title.toLowerCase().split(' ').join('-');
-
-            return `
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerTitle}-1" type="checkbox" name="event-offer-${offerTitle}" ${isOfferSelected ? 'checked' : ''}>
-                <label class="event__offer-label" for="event-offer-${offerTitle}-1">
-                  <span class="event__offer-title">${offer.title}</span>
-                  &plus;&euro;&nbsp;
-                  <span class="event__offer-price">${offer.price}</span>
-                </label>
-              </div>
-            `;
-          }).join('')}
-          </div>
-        </section>
-        ` : ''}
-
-        ${destination ? `
-        <section class="event__section  event__section--destination">
-          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${destination.description}</p>
-
-          ${destination.pictures.length > 0 ? `
-          <div class="event__photos-container">
-            <div class="event__photos-tape">
-              ${destination.pictures.map((pic) => `
-                <img class="event__photo" src="${pic.src}" alt="${pic.description}">
-              `).join('')}
-            </div>
-          </div>
-          ` : ''}
-        </section>
-        ` : ''}
+      <section class="event__details">
+        ${createAvailableOffersTemplate(availableOffers, selectedOffers)}
+        ${createDestinationTemplate(destination)}
       </section>
-      ` : ''}
     </form>
   </li>
   `;
 }
 
 export default class EventEditView {
-  constructor({ point, destination, selectedOffers, availableOffers }) {
+  constructor({ point, destination, availableOffers, selectedOffers = [] }) {
     this.point = point;
     this.destination = destination;
-    this.selectedOffers = selectedOffers;
     this.availableOffers = availableOffers;
+    this.selectedOffers = selectedOffers;
   }
 
   getTemplate() {
-    return createEventEditTemplate(this.point, this.destination, this.selectedOffers, this.availableOffers);
+    return createEventEditTemplate(this.point, this.destination, this.availableOffers, this.selectedOffers);
   }
 
   getElement() {

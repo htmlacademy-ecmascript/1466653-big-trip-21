@@ -2,8 +2,8 @@ import SortFormView from '../view/sort-form-view.js';
 import EventsListView from '../view/events-list-view.js';
 import EventView from '../view/event-view.js';
 import EventEditView from '../view/event-edit-view.js';
-import EventAddView from '../view/event-add-view.js';
 import { render } from '../render.js';
+import { defaultPoint } from '../mock/point.js';
 
 export default class TripsPresenter {
   eventsListComponent = new EventsListView();
@@ -22,10 +22,18 @@ export default class TripsPresenter {
     render(this.eventsListComponent, this.mainContainer);
     render(
       new EventEditView({
+        point: defaultPoint,
+        destination: null,
+        availableOffers: this.offersModel.getByType(this.points[0].type).offers,
+      }),
+      this.eventsListComponent.getElement()
+    );
+    render(
+      new EventEditView({
         point: this.points[0],
         destination: this.destinationsModel.getById(this.points[0].destination),
-        selectedOffers: this.offersModel.getByTypeAndIds(this.points[0].type, this.points[0].offers),
         availableOffers: this.offersModel.getByType(this.points[0].type).offers,
+        selectedOffers: this.offersModel.getByTypeAndIds(this.points[0].type, this.points[0].offers),
       }),
       this.eventsListComponent.getElement()
     );
