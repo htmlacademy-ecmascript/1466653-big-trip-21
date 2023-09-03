@@ -21,10 +21,6 @@ export default class TripsPresenter {
     render(new SortFormView(), this.mainContainer);
     render(this.eventsListComponent, this.mainContainer);
     render(
-      new EventAddView(),
-      this.eventsListComponent.getElement()
-    );
-    render(
       new EventEditView({
         point: this.points[0],
         destination: this.destinationsModel.getById(this.points[0].destination),

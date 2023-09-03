@@ -5,6 +5,17 @@ const Price = {
   MAX: 2000,
 };
 
+const defaultPoint = {
+  id: crypto.randomUUID(),
+  basePrice: 0,
+  dateFrom: null,
+  dateTo: null,
+  destination: '',
+  isFavorite: false,
+  offers: [],
+  type: 'Flight',
+};
+
 function createPoint (destinationId, type, offerIds) {
   return {
     id: crypto.randomUUID(),
@@ -18,4 +29,4 @@ function createPoint (destinationId, type, offerIds) {
   };
 }
 
-export { createPoint };
+export { defaultPoint, createPoint };
